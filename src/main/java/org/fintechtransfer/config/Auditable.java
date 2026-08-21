@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 public class Auditable {
 
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(insertable = false)
+    @Column(nullable = false, insertable = false)
     private LocalDateTime updatedAt;
 
 

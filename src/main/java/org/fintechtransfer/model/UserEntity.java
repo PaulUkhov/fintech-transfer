@@ -10,7 +10,7 @@ import org.fintechtransfer.config.Auditable;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class UserEntity extends Auditable {
 
     @Id

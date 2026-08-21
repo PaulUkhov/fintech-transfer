@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface WalletRepository extends JpaRepository<WalletEntity, Long> {
 
     List<WalletEntity> findByUserIdOrderByIdAsc(Long userId);
@@ -23,6 +25,6 @@ public interface WalletRepository extends JpaRepository<WalletEntity, Long> {
     Optional<WalletEntity> findByIdForUpdate(@Param("id") Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select w from Wallet w join fetch w.user where w.user.email = :email and w.currency = :currency")
+    @Query("select w from WalletEntity w join fetch w.user where w.user.email = :email and w.currency = :currency")
     Optional<WalletEntity> findSystemWallet(@Param("email") String ownerEmail, @Param("currency") String currency);
 }

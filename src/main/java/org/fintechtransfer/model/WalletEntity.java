@@ -21,8 +21,9 @@ public class WalletEntity extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
     @Column(nullable = false, length = 3)
     private String currency;
@@ -33,6 +34,7 @@ public class WalletEntity extends Auditable {
     @Column(nullable = false, length = 16)
     private WalletStatus status;
 
+    @Version
     @Column(nullable = false)
     private long version;
 }
