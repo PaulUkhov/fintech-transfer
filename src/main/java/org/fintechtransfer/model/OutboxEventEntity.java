@@ -1,5 +1,6 @@
 package org.fintechtransfer.model;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.fintechtransfer.config.Auditable;
@@ -27,8 +28,8 @@ public class OutboxEventEntity extends Auditable {
     private String eventType;
 
     @Type(JsonType.class)
-    @Column(columnDefinition = "JSONB")
-    private PaymentPayload payload;
+    @Column(nullable = false, columnDefinition = "JSONB")
+    private String payload;
 
     @Column(nullable = false, length = 16)
     private OutboxStatus status;
