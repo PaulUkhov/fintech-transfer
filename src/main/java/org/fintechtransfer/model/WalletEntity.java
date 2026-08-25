@@ -1,40 +1,54 @@
 package org.fintechtransfer.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.fintechtransfer.config.Auditable;
-
 import java.math.BigDecimal;
+import java.time.Instant;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@Table(name = "wallets",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"user_id", "currency"})
-        })
 @Entity
-public class WalletEntity extends Auditable {
+@Table(name = "wallets")
+public class WalletEntity {
+
+    public enum Status { ACTIVE, FROZEN, CLOSED }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(nullable = false, length = 3)
+    @Column(nullable = false, length = 3, updatable = false)
     private String currency;
 
     @Column(nullable = false, precision = 28, scale = 12)
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
-    private WalletStatus status;
+    private Status status = Status.ACTIVE;
 
     @Version
     @Column(nullable = false)
     private long version;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
+
+    @PrePersist
+    void onCreate() {
+        createdAt = Instant.now();
+    }
+
+    public Long getId() { return id; }
+    public UserEntity getUser() { return user; }
+    public void setUser(UserEntity user) { this.user = user; }
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
+    public long getVersion() { return version; }
+    public Instant getCreatedAt() { return createdAt; }
+    public BigDecimal getBalance() { return balance; }
+    public void setBalance(BigDecimal balance) { this.balance = balance; }
 }
