@@ -1,34 +1,48 @@
 package org.fintechtransfer.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.fintechtransfer.config.Auditable;
-
 import java.math.BigDecimal;
+import java.time.Instant;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+
 @Entity
-@Table(name = "payment_transaction")
+@Table(name = "payment_transactions")
+public class PaymentTransactionEntity {
 
-public class PaymentTransactionEntity extends Auditable {
+    public enum Type { TOP_UP, WITHDRAW }
+    public enum Status { PENDING, COMPLETED, FAILED, ROLLED_BACK }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "idempotency_key", nullable = false, unique = true, length = 64)
+    private String idempotencyKey;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "wallet_id", nullable = false)
     private WalletEntity wallet;
 
-    @Column(name = "type", nullable = false, length = 16)
-    private PaymentType paymentType;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 16)
+    private Type type;
 
     @Column(nullable = false, precision = 28, scale = 12)
     private BigDecimal amount;
@@ -36,21 +50,62 @@ public class PaymentTransactionEntity extends Auditable {
     @Column(nullable = false, length = 3)
     private String currency;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
-    private PaymentStatus status;
+    private Status status = Status.PENDING;
 
     @Column(name = "external_payment_id", length = 64)
     private String externalPaymentId;
 
-    @Lob
     @Column(name = "failure_reason", length = 1000)
     private String failureReason;
 
     @Column(nullable = false)
-    private Integer attempts;
+    private int attempts = 0;
 
     @Version
     @Column(nullable = false)
-    private Long version;
+    private long version;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
+
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt = Instant.now();
+
+    @PrePersist
+    void onCreate() {
+        createdAt = Instant.now();
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updatedAt = Instant.now();
+    }
+
+    public Long getId() { return id; }
+    public String getIdempotencyKey() { return idempotencyKey; }
+    public void setIdempotencyKey(String idempotencyKey) { this.idempotencyKey = idempotencyKey; }
+    public UserEntity getUser() { return user; }
+    public void setUser(UserEntity user) { this.user = user; }
+    public WalletEntity getWallet() { return wallet; }
+    public void setWallet(WalletEntity wallet) { this.wallet = wallet; }
+    public Type getType() { return type; }
+    public void setType(Type type) { this.type = type; }
+    public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
+    public String getExternalPaymentId() { return externalPaymentId; }
+    public void setExternalPaymentId(String externalPaymentId) { this.externalPaymentId = externalPaymentId; }
+    public String getFailureReason() { return failureReason; }
+    public void setFailureReason(String failureReason) { this.failureReason = failureReason; }
+    public int getAttempts() { return attempts; }
+    public void setAttempts(int attempts) { this.attempts = attempts; }
+    public long getVersion() { return version; }
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getUpdatedAt() { return updatedAt; }
 }

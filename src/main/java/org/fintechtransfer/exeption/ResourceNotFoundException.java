@@ -1,7 +1,10 @@
 package org.fintechtransfer.exeption;
 
-public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException(String entityName, Long entityId) {
-        super(entityName + " not found with id: " + entityId);
+import org.springframework.http.HttpStatus;
+
+public class ResourceNotFoundException extends ApiException {
+
+    public ResourceNotFoundException(String message) {
+        super(HttpStatus.NOT_FOUND, message);
     }
 }

@@ -1,7 +1,17 @@
 package org.fintechtransfer.exeption;
 
-public class ApiException extends RuntimeException {
-    public ApiException(String message) {
+import org.springframework.http.HttpStatus;
+
+public abstract class ApiException extends RuntimeException {
+
+    private final HttpStatus status;
+
+    protected ApiException(HttpStatus status, String message) {
         super(message);
+        this.status = status;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
     }
 }
