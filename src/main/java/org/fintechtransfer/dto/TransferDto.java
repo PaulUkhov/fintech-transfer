@@ -1,12 +1,10 @@
 package org.fintechtransfer.dto;
 
-import lombok.Builder;
 import org.fintechtransfer.model.TransferEntity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Builder
 public record TransferDto(
         Long id,
         Long fromWalletId,
@@ -18,23 +16,22 @@ public record TransferDto(
         BigDecimal fee,
         String status,
         String errorMessage,
-        Instant createAt,
-        Instant completedAt
-) {
-    public static TransferDto from(TransferEntity transferEntity) {
-        return TransferDto.builder()
-                .id(transferEntity.getId())
-                .fromWalletId(transferEntity.getFromWallet().getId())
-                .toWalletId(transferEntity.getToWallet().getId())
-                .currency(transferEntity.getCurrency())
-                .amount(transferEntity.getAmount())
-                .convertedAmount(transferEntity.getConvertedAmount())
-                .fxRate(transferEntity.getFxRate())
-                .fee(transferEntity.getFee())
-                .status(transferEntity.getStatus().name())
-                .errorMessage(transferEntity.getErrorMessage())
-                .createAt(transferEntity.getCreatedAt())
-                .completedAt(transferEntity.getCompletedAt())
-                .build();
+        Instant createdAt,
+        Instant completedAt) {
+
+    public static TransferDto from(TransferEntity t) {
+        return new TransferDto(
+                t.getId(),
+                t.getFromWallet() == null ? null : t.getFromWallet().getId(),
+                t.getToWallet() == null ? null : t.getToWallet().getId(),
+                t.getCurrency(),
+                t.getAmount(),
+                t.getConvertedAmount(),
+                t.getFxRate(),
+                t.getFee(),
+                t.getStatus().name(),
+                t.getErrorMessage(),
+                t.getCreatedAt(),
+                t.getCompletedAt());
     }
 }

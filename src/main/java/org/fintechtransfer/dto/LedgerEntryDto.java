@@ -1,11 +1,9 @@
 package org.fintechtransfer.dto;
 
-import lombok.Builder;
-import org.fintechtransfer.model.LedgerEntryEntity;
-
 import java.math.BigDecimal;
 import java.time.Instant;
-@Builder
+
+import org.fintechtransfer.model.LedgerEntryEntity;
 public record LedgerEntryDto(
         Long id,
         Long walletId,
@@ -17,21 +15,20 @@ public record LedgerEntryDto(
         String currency,
         String description,
         String operationKey,
-        Instant createdAt
-) {
-    public static LedgerEntryDto from(LedgerEntryEntity ledgerEntryEntity) {
-        return  LedgerEntryDto.builder()
-                .id(ledgerEntryEntity.getId())
-                .walletId(ledgerEntryEntity.getId())
-                .transferId(ledgerEntryEntity.getId())
-                .paymentId(ledgerEntryEntity.getId())
-                .entryType(ledgerEntryEntity.getEntryType().name())
-                .amount(ledgerEntryEntity.getAmount())
-                .balanceAfter(ledgerEntryEntity.getBalanceAfter())
-                .currency(ledgerEntryEntity.getCurrency())
-                .description(ledgerEntryEntity.getDescription())
-                .operationKey(ledgerEntryEntity.getOperationKey())
-                .createdAt(ledgerEntryEntity.getCreatedAt())
-                .build();
+        Instant createdAt) {
+
+    public static LedgerEntryDto from(LedgerEntryEntity e) {
+        return new LedgerEntryDto(
+                e.getId(),
+                e.getWallet().getId(),
+                e.getTransfer() == null ? null : e.getTransfer().getId(),
+                e.getPayment() == null ? null : e.getPayment().getId(),
+                e.getEntryType().name(),
+                e.getAmount(),
+                e.getBalanceAfter(),
+                e.getCurrency(),
+                e.getDescription(),
+                e.getOperationKey(),
+                e.getCreatedAt());
     }
 }

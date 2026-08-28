@@ -1,14 +1,17 @@
 package org.fintechtransfer.dto;
 
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
 public record WithdrawRequest(
+        @NotNull
         @DecimalMin(value = "0.01", message = "Amount must be at least 0.01")
-        @Digits(integer = 10, fraction = 2, message = "Amount must have up to 10 digits and 2 decimal places")
+        @DecimalMax(value = "1000000", message = "Amount too large")
+        @Digits(integer = 10, fraction = 2)
         BigDecimal amount,
-        String bankAccount
-) {
+        String bankAccount) {
 }
