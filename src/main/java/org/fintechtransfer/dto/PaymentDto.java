@@ -1,11 +1,9 @@
 package org.fintechtransfer.dto;
 
-import lombok.Builder;
-import org.fintechtransfer.model.PaymentTransactionEntity;
-
 import java.math.BigDecimal;
 import java.time.Instant;
-@Builder
+
+import org.fintechtransfer.model.PaymentTransactionEntity;
 public record PaymentDto(
         Long id,
         Long walletId,
@@ -16,21 +14,19 @@ public record PaymentDto(
         String externalPaymentId,
         String failureReason,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt) {
 
-) {
-    public static PaymentDto from(PaymentTransactionEntity paymentTransactionEntity){
-        return PaymentDto.builder()
-                .id(paymentTransactionEntity.getId())
-                .walletId(paymentTransactionEntity.getWallet().getId())
-                .type(paymentTransactionEntity.getType().name())
-                .amount(paymentTransactionEntity.getAmount())
-                .currency(paymentTransactionEntity.getCurrency())
-                .status(paymentTransactionEntity.getStatus().name())
-                .externalPaymentId(paymentTransactionEntity.getExternalPaymentId())
-                .failureReason(paymentTransactionEntity.getFailureReason())
-                .createdAt(paymentTransactionEntity.getCreatedAt())
-                .updatedAt(paymentTransactionEntity.getUpdatedAt())
-                .build();
+    public static PaymentDto from(PaymentTransactionEntity p) {
+        return new PaymentDto(
+                p.getId(),
+                p.getWallet().getId(),
+                p.getType().name(),
+                p.getAmount(),
+                p.getCurrency(),
+                p.getStatus().name(),
+                p.getExternalPaymentId(),
+                p.getFailureReason(),
+                p.getCreatedAt(),
+                p.getUpdatedAt());
     }
 }
