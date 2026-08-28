@@ -2,19 +2,32 @@ package org.fintechtransfer.controller;
 
 import org.fintechtransfer.dto.ExchangeRateDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ledger.service.ExchangeRateService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/exchange-rates")
+@Tag(name = "Exchange Rates", description = "Public currency rates (EUR pivot)")
 public class ExchangeRateController {
-    private ExchangeRateService exchangeRateService;
+
+    private final ExchangeRateService exchangeRateService;
 
     public ExchangeRateController(ExchangeRateService exchangeRateService) {
         this.exchangeRateService = exchangeRateService;
     }
 
-    public ResponseEntity<List<ExchangeRateDto>> list(String){}
+    @GetMapping
+    @Operation(summary = "List rates for a base currency (default EUR)")
+    public ResponseEntity<List<ExchangeRateDto>> list(@RequestParam(defaultValue = "EUR") String base) {
+        return ResponseEntity.ok(exchangeRateService.list(base.toUpperCase()));
+    }
 }
