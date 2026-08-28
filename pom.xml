@@ -88,6 +88,12 @@
             <scope>runtime</scope>
         </dependency>
         
+        <!-- Redis: idempotency, refresh-token store, rate limiting -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        
         <!-- OpenAPI -->
         <dependency>
             <groupId>org.springdoc</groupId>
