@@ -4,6 +4,7 @@ import org.fintechtransfer.dto.CreateWalletRequest;
 import org.fintechtransfer.dto.LedgerEntryDto;
 import org.fintechtransfer.dto.PageResponse;
 import org.fintechtransfer.dto.WalletDto;
+import org.fintechtransfer.model.UserEntity;
 import org.fintechtransfer.repository.LedgerEntryRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -41,26 +42,26 @@ public class WalletController {
 
     @PostMapping
     @Operation(summary = "Create a wallet in a given currency")
-    public ResponseEntity<WalletDto> create(@AuthenticationPrincipal User user,
+    public ResponseEntity<WalletDto> create(@AuthenticationPrincipal UserEntity user,
                                             @Valid @RequestBody CreateWalletRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(walletService.create(user.getId(), request));
     }
 
     @GetMapping
     @Operation(summary = "List my wallets with current balances")
-    public ResponseEntity<List<WalletDto>> list(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<WalletDto>> list(@AuthenticationPrincipal UserEntity user) {
         return ResponseEntity.ok(walletService.list(user.getId()));
     }
 
     @GetMapping("/{walletId}")
     @Operation(summary = "Get a single wallet with its balance")
-    public ResponseEntity<WalletDto> get(@AuthenticationPrincipal User user, @PathVariable Long walletId) {
+    public ResponseEntity<WalletDto> get(@AuthenticationPrincipal UserEntity user, @PathVariable Long walletId) {
         return ResponseEntity.ok(walletService.get(user.getId(), walletId));
     }
 
     @GetMapping("/{walletId}/ledger")
     @Operation(summary = "Paged event-sourced ledger of a wallet")
-    public ResponseEntity<PageResponse<LedgerEntryDto>> ledger(@AuthenticationPrincipal User user,
+    public ResponseEntity<PageResponse<LedgerEntryDto>> ledger(@AuthenticationPrincipal UserEntity user,
                                                                @PathVariable Long walletId,
                                                                @RequestParam(defaultValue = "0") int page,
                                                                @RequestParam(defaultValue = "20") int size) {

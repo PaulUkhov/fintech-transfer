@@ -2,6 +2,7 @@ package org.fintechtransfer.securiry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.fintechtransfer.config.LedgerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;

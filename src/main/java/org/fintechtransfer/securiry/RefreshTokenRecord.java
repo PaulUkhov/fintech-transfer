@@ -1,12 +1,6 @@
 package org.fintechtransfer.securiry;
 
-/**
- * Opaque refresh token with rotation and reuse detection.
- * <p>Token format: {@code familyId.tokenId}. Family groups a chain of rotated
- * tokens. On refresh the old token is invalidated and a new one (same family)
- * is issued. If a revoked token is replayed, the whole family is revoked —
- * this is the OWASP recommended refresh-token strategy.
- */
+
 public record RefreshTokenRecord(String familyId, String tokenId, Long userId, long expiresAtEpochSeconds) {
 
     public String asString() {
