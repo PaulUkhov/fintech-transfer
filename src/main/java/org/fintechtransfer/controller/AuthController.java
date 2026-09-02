@@ -1,7 +1,10 @@
 package org.fintechtransfer.controller;
 
-import org.fintechtransfer.dto.*;
-import org.fintechtransfer.model.UserEntity;
+import org.fintechtransfer.dto.AuthResponse;
+import org.fintechtransfer.dto.LoginRequest;
+import org.fintechtransfer.dto.RefreshRequest;
+import org.fintechtransfer.dto.RegisterRequest;
+import org.fintechtransfer.dto.UserDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,13 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ledger.dto.AuthResponse;
-import com.ledger.dto.LoginRequest;
-import com.ledger.dto.RefreshRequest;
-import com.ledger.dto.RegisterRequest;
-import com.ledger.dto.UserDto;
-import com.ledger.model.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

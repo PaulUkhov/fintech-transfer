@@ -1,8 +1,14 @@
 package org.fintechtransfer.controller;
 
+import java.time.Duration;
+import java.util.List;
+
+import org.fintechtransfer.config.LedgerProperties;
 import org.fintechtransfer.dto.PaymentDto;
 import org.fintechtransfer.dto.TopUpRequest;
 import org.fintechtransfer.dto.WithdrawRequest;
+import org.fintechtransfer.model.UserEntity;
+import org.fintechtransfer.securiry.RateLimitService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,18 +19,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ledger.config.LedgerProperties;
-import com.ledger.model.User;
-import com.ledger.security.RateLimitService;
-import com.ledger.service.IdempotencyService;
-import com.ledger.service.PaymentSagaService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-
-import java.time.Duration;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -48,7 +45,7 @@ public class PaymentController {
 
     @PostMapping("/wallets/{walletId}/topup")
     @Operation(summary = "Top up a wallet via the external acquiring gateway (saga)")
-    public ResponseEntity<?> topUp(@AuthenticationPrincipal User user,
+    public ResponseEntity<?> topUp(@AuthenticationPrincipal UserEntity user,
                                    @PathVariable Long walletId,
                                    @Valid @RequestBody TopUpRequest request,
                                    @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey) {
@@ -60,7 +57,7 @@ public class PaymentController {
 
     @PostMapping("/wallets/{walletId}/withdraw")
     @Operation(summary = "Withdraw from a wallet to an external bank account (saga with compensation)")
-    public ResponseEntity<?> withdraw(@AuthenticationPrincipal User user,
+    public ResponseEntity<?> withdraw(@AuthenticationPrincipal UserEntity user,
                                       @PathVariable Long walletId,
                                       @Valid @RequestBody WithdrawRequest request,
                                       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey) {
@@ -72,13 +69,13 @@ public class PaymentController {
 
     @GetMapping
     @Operation(summary = "My payments")
-    public ResponseEntity<List<PaymentDto>> list(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<PaymentDto>> list(@AuthenticationPrincipal UserEntity user) {
         return ResponseEntity.ok(sagaService.list(user.getId()));
     }
 
     @GetMapping("/{paymentId}")
     @Operation(summary = "Get one payment")
-    public ResponseEntity<PaymentDto> get(@AuthenticationPrincipal User user, @PathVariable Long paymentId) {
+    public ResponseEntity<PaymentDto> get(@AuthenticationPrincipal UserEntity user, @PathVariable Long paymentId) {
         return ResponseEntity.ok(sagaService.get(user.getId(), paymentId));
     }
 }
